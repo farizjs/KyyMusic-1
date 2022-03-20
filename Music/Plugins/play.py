@@ -597,7 +597,8 @@ async def startyuplay(_, CallbackQuery):
         await CallbackQuery.message.reply_text(
             f"""
 **Duration Error**
-**Duration Allowed: {DURATION LIMIT}**
+
+**Duration Allowed: {DURATION_LIMIT}**
 **Received Duration:** {duration}
 """
         )
