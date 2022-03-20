@@ -6,7 +6,7 @@ from Music.config import OWNER_ID
 from Music.MusicUtilities.tgcallsrun import ASS_ACC as USER
 
 
-@Client.on_message(filters.command("broadcast") & filters.user(OWNER_ID) & ~filters.edited)
+@Client.on_message(filters.command("mbroadcast") & filters.user(OWNER_ID) & ~filters.edited)
 async def gcast(_, message: Message):
     sent=0
     failed=0
