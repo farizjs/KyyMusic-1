@@ -86,12 +86,12 @@ async def vplay(c: Client, message: Message):
     if a.status != "administrator":
         await message.reply_text(
             f"""
-💡 Untuk menggunakan saya, Saya perlu menjadi admin dengan izin:
+💡 To use me I need to be admin with permissions:
 
-» ❌ Hapus pesan
-» ❌ Blokir pengguna
-» ❌ Tambah pengguna
-» ❌ Kelola obrolan suara
+» ❌ Delete message
+» ❌ Block user
+» ❌ Add user
+» ❌ Manage voice chat
 
 ✨ Powered by: [{BOT_NAME}](t.me/{BOT_USERNAME})
 """,
@@ -101,9 +101,9 @@ async def vplay(c: Client, message: Message):
     if not a.can_manage_voice_chats:
         await message.reply_text(
             f"""
-💡 Untuk menggunakan saya, Saya perlu menjadi admin dengan izin:
+💡 To use me I need to be admin with permissions:
 
-» ❌ Kelola obrolan suara
+» ❌ Manage voice chat
 
 ✨ Powered by: [{BOT_NAME}](t.me/{BOT_USERNAME})
 """,
@@ -113,9 +113,9 @@ async def vplay(c: Client, message: Message):
     if not a.can_delete_messages:
         await message.reply_text(
             f"""
-💡 Untuk menggunakan saya, Saya perlu menjadi admin dengan izin:
+💡 To use me I need to be admin with permissions:
 
-» ❌ Hapus pesan
+» ❌ Delete message
 
 ✨ Powered by: [{BOT_NAME}](t.me/{BOT_USERNAME})
 """,
@@ -125,9 +125,9 @@ async def vplay(c: Client, message: Message):
     if not a.can_invite_users:
         await message.reply_text(
             f"""
-💡 Untuk menggunakan saya, Saya perlu menjadi admin dengan izin:
+💡 To use me I need to be admin with permissions:
 
-» ❌ Tambah pengguna
+» ❌ Add user
 
 ✨ Powered by: [{BOT_NAME}](t.me/{BOT_USERNAME})
 """,
@@ -148,7 +148,7 @@ async def vplay(c: Client, message: Message):
                 await ASS_ACC.join_chat(message.chat.username)
             except Exception as e:
                 await message.reply_text(
-                    f"❌ **@{ubot.username} Assistant gagal bergabung**\n\n**Alasan**: `{e}`"
+                    f"❌ **@{ubot.username} Assistant failed to join**\n\n**Reason**: `{e}`"
                 )
                 return
         else:
@@ -161,14 +161,14 @@ async def vplay(c: Client, message: Message):
                 pass
             except Exception as e:
                 return await message.reply_text(
-                    f"❌ **@{ubot.username} Assistant gagal bergabung**\n\n**Alasan**: `{e}`"
+                    f"❌ **@{ubot.username} Assistant failed to join**\n\n**Reason**: `{e}`"
                 )
 
     if replied:
         if replied.video or replied.document:
             what = "Audio Searched"
             await LOG_CHAT(message, what)
-            loser = await replied.reply("📥 **Mengunduh Video...**")
+            loser = await replied.reply("📥 **Download Videos...**")
             dl = await replied.download()
             link = replied.link
             if len(message.command) < 2:
@@ -197,12 +197,12 @@ async def vplay(c: Client, message: Message):
                 await message.reply_photo(
                     photo="cache/IMG_20211230_211039_090.jpg",
                     caption=f"""
-💡 **Trek ditambahkan ke antrian**
+💡 **Tracks added to queue**
 
-🏷 **Nama:** [{songname[:999]}]({link})
-🎧 **Atas permintaan:** {requester}
+🏷 **Name:** [{songname[:999]}]({link})
+🎧 **From request:** {requester}
 
-#️⃣ **Posisi antrian** {pos}
+#️⃣ **queue position** {pos}
 """,
                     reply_markup=keyboard,
                 )
@@ -228,12 +228,12 @@ async def vplay(c: Client, message: Message):
                 await message.reply_photo(
                     photo="cache/IMG_20211230_211039_090.jpg",
                     caption=f"""
-▶️ **Streaming video dimulai**
+▶️ **Video streaming starts**
 
-🏷 **Nama:** [{songname[:999]}]({link})
-🎧 **Atas permintaan:** {requester}
+🏷 **Name:** [{songname[:999]}]({link})
+🎧 **Upon request:** {requester}
 
-💬 **Diputar di:** {message.chat.title}
+💬 **Played on:** {message.chat.title}
 """,
                     reply_markup=keyboard,
                 )
@@ -246,13 +246,13 @@ async def vplay(c: Client, message: Message):
         else:
             what = "Query Given"
             await LOG_CHAT(message, what)
-            loser = await message.reply("🔎 **Pencarian**")
+            loser = await message.reply("🔎 **Search**")
             query = message.text.split(None, 1)[1]
             search = ytsearch(query)
             Q = 480
             amaze = HighQualityVideo()
             if search == 0:
-                await loser.edit("❌ **Tidak ada hasil yang ditemukan.**")
+                await loser.edit("❌ **No results found.**")
             else:
                 songname = search[0]
                 url = search[1]
@@ -260,7 +260,7 @@ async def vplay(c: Client, message: Message):
                 thumbnail = search[3]
                 veez, ytlink = await ytdl(url)
                 if veez == 0:
-                    await loser.edit(f"❌ yt-dl masalah terdeteksi\n\n» `{ytlink}`")
+                    await loser.edit(f"❌ yt-dl problem detected\n\n» `{ytlink}`")
                 else:
                     if chat_id in QUEUE:
                         pos = add_to_queue(chat_id, songname, ytlink, url, "Video", Q)
@@ -269,13 +269,13 @@ async def vplay(c: Client, message: Message):
                         await message.reply_photo(
                             photo="cache/IMG_20211230_211039_090.jpg",
                             caption=f"""
-💡 **Trek ditambahkan ke antrian**
+💡 **Tracks added to queue**
 
-🏷 **Nama:** [{songname[:999]}]({url})
-⏱️ **Durasi:** {duration}
-🎧 **Atas permintaan:** {requester}
+🏷 **Name:** [{songname[:999]}]({url})
+⏱️ **Duration:** {duration}
+🎧 **Upon request:** {requester}
 
-#️⃣ **Posisi antrian** {pos}
+#️⃣ **queue position** {pos}
 """,
                             reply_markup=keyboard,
                         )
@@ -298,13 +298,13 @@ async def vplay(c: Client, message: Message):
                             await message.reply_photo(
                                 photo="cache/IMG_20211230_211039_090.jpg",
                                 caption=f"""
-▷ **Memutar video dimulai**
+▷ **Playing video starts**
 
-🏷 **Nama:** [{songname[:999]}]({url})
-⏱️ **Durasi:** {duration}
-🎧 **Atas permintaan:** {requester}
+🏷 **Name:** [{songname[:999]}]({url})
+⏱️ **Duration:** {duration}
+🎧 **Upon request:** {requester}
 
-💬 **Diputar di:** {message.chat.title}
+💬 **Played on:** {message.chat.title}
 """,
                                 reply_markup=keyboard,
                             )
@@ -321,11 +321,11 @@ async def playlist(client, m: Message):
         if len(chat_queue) == 1:
             await m.delete()
             await m.reply(
-                f"**🎧 SEKARANG MEMUTAR:** \n[{chat_queue[0][0]}]({chat_queue[0][2]}) | `{chat_queue[0][3]}`",
+                f"**🎧 NOW PLAYING:** \n[{chat_queue[0][0]}]({chat_queue[0][2]}) | `{chat_queue[0][3]}`",
                 disable_web_page_preview=True,
             )
         else:
-            QUE = f"**🎧 SEKARANG MEMUTAR:** \n[{chat_queue[0][0]}]({chat_queue[0][2]}) | `{chat_queue[0][3]}` \n\n**⏯ DAFTAR ANTRIAN:**"
+            QUE = f"**🎧 NOW PLAYING:** \n[{chat_queue[0][0]}]({chat_queue[0][2]}) | `{chat_queue[0][3]}` \n\n**⏯ DAFTAR ANTRIAN:**"
             l = len(chat_queue)
             for x in range(1, l):
                 hmm = chat_queue[x][0]
@@ -334,4 +334,4 @@ async def playlist(client, m: Message):
                 QUE = QUE + "\n" + f"**#{x}** - [{hmm}]({hmmm}) | `{hmmmm}`\n"
             await m.reply(QUE, disable_web_page_preview=True)
     else:
-        await m.reply("**❌ Tidak memutar apapun**")
+        await m.reply("**❌ Doesn't play anything**")
