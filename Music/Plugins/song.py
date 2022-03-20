@@ -23,7 +23,7 @@ def time_to_seconds(time):
 
 
 @Client.on_message(
-    command(["song", f"song@{BOT_USERNAME}", "vsong", f"vsong@{BOT_USERNAME}"])
+    command(["msong", f"msong@{BOT_USERNAME}", "vsong", f"vsong@{BOT_USERNAME}"])
 )
 async def mpthree(_, message: Message):
     chat_id = message.chat.id
@@ -69,9 +69,9 @@ Kembalikan ke Akun Pengguna Dari Hak Admin.
         buttons = gets(videoid, user_id)
         m = await message.reply_text(
             f"""
-<b>🏷️ Judul:</b> [{title[:25]}]({url})
+<b>🏷️ judul:</b> [{title[:25]}]({url})
 <b>💡</b> [More Information](https://t.me/{BOT_USERNAME}?start=info_{id})
-<b>⚡ Didukung</b> [{BOT_NAME}](t.me/{BOT_USERNAME})
+<b>⚡ Supported</b> [{BOT_NAME}](t.me/{BOT_USERNAME})
 """,
             reply_markup=InlineKeyboardMarkup(buttons),
         )
