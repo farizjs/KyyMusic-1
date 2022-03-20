@@ -140,7 +140,7 @@ que = {}
 
 
 @app.on_message(
-    command("music") & ~filters.edited & ~filters.bot & ~filters.private
+    command("musicplayer") & ~filters.edited & ~filters.bot & ~filters.private
 )
 @authorized_users_only
 async def music_onoff(_, message: Message):
@@ -153,33 +153,33 @@ async def music_onoff(_, message: Message):
     except:
         return
     if len(message.command) != 2:
-        await message.reply_text("**• usage:**\n\n `/music on` & `/music off`")
+        await message.reply_text("**• usage:**\n\n `/musicplayer on` & `/musicplayer off`")
         return
     status = message.text.split(None, 1)[1]
     message.chat.id
     if status in ("ON", "on", "On"):
         lel = await message.reply("`processing...`")
         if not message.chat.id in DISABLED_GROUPS:
-            await lel.edit("» **Music Aktif.**")
+            await lel.edit("» **Music On.**")
             return
         DISABLED_GROUPS.remove(message.chat.id)
         await lel.edit(
-            f"**✅ Music Telah Di Diaktifkan Di {message.chat.title}**"
+            f"**✅ Music Has Been Enabled In {message.chat.title}**"
         )
 
     elif status in ("OFF", "off", "Off"):
         lel = await message.reply("`processing...`")
 
         if message.chat.id in DISABLED_GROUPS:
-            await lel.edit("» **Music Di Nonaktifkan.**")
+            await lel.edit("» **Music Disabled.**")
             return
         DISABLED_GROUPS.append(message.chat.id)
         await lel.edit(
-            f"**✅ Music Telah Di Nonaktifkan Di {message.chat.title}**"
+            f"**✅ Music Has Been Disabled In {message.chat.title}**"
         )
     else:
         await message.reply_text(
-            "**• Penggunaan:**\n\n `/music on` & `/music off`"
+            "**• Use:**\n\n `/musicplayer on` & `/musicplayer off`"
         )
 
 
@@ -189,14 +189,14 @@ async def play(_, message: Message):
     if message.sender_chat:
         return await message.reply_text(
             """
-Anda adalah Admin Anonim!
-Kembalikan kembali ke Akun Pengguna Dari Hak Admin.
+You are an Anonymous Admin!
+Revert back to User Account From Admin Rights.
 """
         )
     global useer
     if chat_id in DISABLED_GROUPS:
         return await message.reply_text(
-            f"😕 **Maap {message.from_user.mention}, Musicnya Dimatiin Sama Admin**" 
+            f"😕 **Sorry {message.from_user.mention}, The music is turned off by the admin**" 
         )
         return
     user_id = message.from_user.id
@@ -210,43 +210,41 @@ Kembalikan kembali ke Akun Pengguna Dari Hak Admin.
                 f"Bot sedang dalam proses peng Updatean. Maaf untuk ketidaknyamanannya!"
             )
         return await message.reply_text(
-            f"Bot sedang dalam Pemeliharaan. Maaf untuk ketidaknyamanannya!"
+            f"Bot is under Maintenance. Sorry for the inconvenience!"
         )
     a = await app.get_chat_member(message.chat.id, BOT_ID)
     if a.status != "administrator":
         await message.reply_text(
             """
-Saya perlu menjadi admin dengan beberapa izin:
+I need to be an admin with some permissions:
 
-- **dapat mengelola obrolan suara:** Untuk mengelola obrolan suara
-- **dapat menghapus pesan:** Untuk menghapus Sampah yang Dicari Musik
-- **dapat mengundang pengguna**: Untuk mengundang asisten untuk mengobrol
-- **dapat membatasi anggota**: Untuk Melindungi Musik dari Spam.
-"""
+- **can manage voice chat:** To manage voice chat
+- **can delete messages:** To delete Music Searched Junk
+- **can change"""
         )
         return
     if not a.can_manage_voice_chats:
         await message.reply_text(
-            "Saya tidak memiliki izin yang diperlukan untuk melakukan tindakan ini."
-            + "\n❌ MENGELOLA OBROLAN SUARA"
+            "I don't have the necessary permissions to perform this action."
+            + "\n❌ MANAGING VOICE CHATS"
         )
         return
     if not a.can_delete_messages:
         await message.reply_text(
-            "Saya tidak memiliki izin yang diperlukan untuk melakukan tindakan ini."
-            + "\n❌ HAPUS PESAN"
+            "I don't have the necessary permissions to perform this action."
+            + "\n❌ DELETE MESSAGE"
         )
         return
     if not a.can_invite_users:
         await message.reply_text(
             "I don't have the required permission to perform this action."
-            + "\n❌ UNDANG PENGGUNA MELALUI LINK"
+            + "\n❌ INVITE USERS THROUGH THE LINK"
         )
         return
     if not a.can_restrict_members:
         await message.reply_text(
-            "Saya tidak memiliki izin yang diperlukan untuk melakukan tindakan ini."
-            + "\n❌ BAN PENGGUNA"
+            "I don't have the necessary permissions to perform this action."
+            + "\n❌ BAN USER"
         )
         return
     try: 
@@ -274,8 +272,8 @@ Saya perlu menjadi admin dengan beberapa izin:
         except Exception as e:
             return await message.reply_text(
                     f"""
-**Asisten Gagal Bergabung**
-**Alasan**:{e}
+**Assistant Failed to Join**
+**Reason**:{e}
 """
                 )
     except UserAlreadyParticipant:
@@ -283,8 +281,8 @@ Saya perlu menjadi admin dengan beberapa izin:
     except Exception as e:
         return await message.reply_text(
                     f"""
-**Asisten Gagal Bergabung**
-**Alasan**:{e}
+**Assistant Failed to Join**
+**Reason**:{e}
 """
             )
     audio = (
@@ -299,19 +297,19 @@ Saya perlu menjadi admin dengan beberapa izin:
         what = "Audio Searched"
         await LOG_CHAT(message, what)
         mystic = await message.reply_text(
-            f"**🔄 Memproses Audio Yang Diberikan Oleh {username}**"
+            f"**🔄 Processing Audio Provided By {username}**"
         )
         if audio.file_size > 157286400:
-            await mystic.edit_text("Ukuran File Audio Harus Kurang dari 150 mb")
+            await mystic.edit_text("Audio File Size Must Be Less Than 150 mb")
             return
         duration = round(audio.duration / 60)
         if duration > DURATION_LIMIT:
             return await mystic.edit_text(
                 f"""
-**Kesalahan Durasi**
+**Duration Error**
 
-**Durasi yang Diizinkan: **{DURATION_LIMIT}
-**Durasi yang Diterima:** {duration}
+**Allowed Duration: **{DURATION_LIMIT}
+**Accepted Duration:** {duration}
 """
             )
         file_name = (
@@ -329,8 +327,8 @@ Saya perlu menjadi admin dengan beberapa izin:
             if (not path.isfile(file_name))
             else file_name,
         )
-        title = "Audio Yang Dipilih Dari Telegram"
-        link = "https://t.me/NastyProject"
+        title = "Selected Audio From Telegram"
+        link = "https://t.me/BotMusicChat"
         thumb = "cache/Audio.png"
         videoid = "smex1"
     elif url:
@@ -351,16 +349,16 @@ Saya perlu menjadi admin dengan beberapa izin:
                 videoid = result["id"]
         except Exception as e:
             return await mystic.edit_text(
-                f"Lagu Tidak Ditemukan.\n**Kemungkinan Alasan:** {e}"
+                f"Song Not Found.\n**Possible Reason:** {e}"
             )
         smex = int(time_to_seconds(duration))
         if smex > DURATION_LIMIT:
             return await mystic.edit_text(
                 f"""
-**Kesalahan Durasi**
+**Duration Error**
 
-**Durasi yang Diizinkan:** {DURATION_LIMIT}
-**Durasi yang Diterima:** {duration}
+**Duration Allowed:** {DURATION_LIMIT}
+**Received Duration:** {duration}
 """
             )
         if duration == "None":
@@ -450,14 +448,14 @@ Saya perlu menjadi admin dengan beberapa izin:
             buttons = playlist_markup(user_name, user_id)
             hmo = await message.reply_photo(
             photo=thumb, 
-            caption=("**Penggunaan:** /play [nama musik atau tautan youtube atau balas audio]\n\njika Anda ingin memutar daftar putar! Pilih yang dari bawah."),    
+            caption=("**Use:** /play [music name or youtube link or reply audio]\n\nif you want to play playlist! Choose the one from below."),    
             reply_markup=InlineKeyboardMarkup(buttons),
             )
             return
         what = "Query Given"
         await LOG_CHAT(message, what)
         query = message.text.split(None, 1)[1]
-        mystic = await message.reply_text("**🔎 Pencarian**")
+        mystic = await message.reply_text("**🔎 Search**")
         try:
             a = VideosSearch(query, limit=5)
             result = (a.result()).get("result")
@@ -485,7 +483,7 @@ Saya perlu menjadi admin dengan beberapa izin:
         buttons = search_markup(ID1, ID2, ID3, ID4, ID5, duration1, duration2, duration3, duration4, duration5, user_id, query)
         hmo = await message.reply_photo(
             photo=thumb,
-            caption=f"**✨ Silahkan pilih lagu yang ingin anda putar**\n\n¹ <b>{title1}</b>\n  ┗ 💡 <u>__[More Information](https://t.me/{BOT_USERNAME}?start=info_{ID1})__</u>\n  ┗ ⚡ __Powered by {BOT_NAME}__\n\n² <b>{title2}</b>\n  ┗ 💡 <u>__[More Information](https://t.me/{BOT_USERNAME}?start=info_{ID2})__</u>\n  ┗ ⚡ __Powered by {BOT_NAME}__\n\n³ <b>{title3}</b>\n  ┗ 💡 <u>__[More Information](https://t.me/{BOT_USERNAME}?start=info_{ID3})__</u>\n  ┗ ⚡ __Powered by {BOT_NAME}__\n\n⁴ <b>{title4}</b>\n  ┗ 💡 <u>__[More Information](https://t.me/{BOT_USERNAME}?start=info_{ID4})__</u>\n  ┗ ⚡ __Powered by {BOT_NAME}__\n\n⁵ <b>{title5}</b>\n  ┗ 💡 <u>__[More Information](https://t.me/{BOT_USERNAME}?start=info_{ID5})__</u>\n  ┗ ⚡ __Powered by {BOT_NAME}__",    
+            caption=f"**✨ Please select the song you want to play**\n\n¹ <b>{title1}</b>\n  ┗ 💡 <u>__[More Information](https://t.me/{BOT_USERNAME}?start=info_{ID1})__</u>\n  ┗ ⚡ __Powered by {BOT_NAME}__\n\n² <b>{title2}</b>\n  ┗ 💡 <u>__[More Information](https://t.me/{BOT_USERNAME}?start=info_{ID2})__</u>\n  ┗ ⚡ __Powered by {BOT_NAME}__\n\n³ <b>{title3}</b>\n  ┗ 💡 <u>__[More Information](https://t.me/{BOT_USERNAME}?start=info_{ID3})__</u>\n  ┗ ⚡ __Powered by {BOT_NAME}__\n\n⁴ <b>{title4}</b>\n  ┗ 💡 <u>__[More Information](https://t.me/{BOT_USERNAME}?start=info_{ID4})__</u>\n  ┗ ⚡ __Powered by {BOT_NAME}__\n\n⁵ <b>{title5}</b>\n  ┗ 💡 <u>__[More Information](https://t.me/{BOT_USERNAME}?start=info_{ID5})__</u>\n  ┗ ⚡ __Powered by {BOT_NAME}__",    
             reply_markup=InlineKeyboardMarkup(buttons),
         )
         disable_web_page_preview=True
@@ -520,13 +518,13 @@ Saya perlu menjadi admin dengan beberapa izin:
         await message.reply_photo(
             photo=thumb,
             caption=f"""
-<b>💡 Trek ditambahkan ke antrian</b>
+<b>💡 Tracks added to queue</b>
 
-<b>🏷️ Nama: [{title[:25]}]({link})</b>
-<b>⏱️ Durasi:</b> {duration} \n
-<b>🎧 Atas permintaan: </b>{checking}
+<b>🏷️ Name: [{title[:999]}]({link})</b>
+<b>⏱️ Duration:</b> {duration} \n
+<b>🎧 Upon request: </b>{checking}
 
-<b>#️⃣ Posisi antrian</b> {position}
+<b>#️⃣ queue position</b> {position}
 """,
             reply_markup=InlineKeyboardMarkup(buttons),
         )
@@ -561,9 +559,9 @@ Saya perlu menjadi admin dengan beberapa izin:
             photo=thumb,
             reply_markup=InlineKeyboardMarkup(buttons),
             caption=f"""
-<b>🏷 Nama:</b> [{title[:25]}]({link})
-<b>⏱️ Durasi:</b> {duration}
-<b>🎧 Atas permintaan:</b> {checking}
+<b>🏷 Name:</b> [{title[:999]}]({link})
+<b>⏱️ Duration:</b> {duration}
+<b>🎧 Upon request:</b> {checking}
 """,
         )
         return await mystic.delete()
@@ -598,10 +596,9 @@ async def startyuplay(_, CallbackQuery):
     if smex > DURATION_LIMIT:
         await CallbackQuery.message.reply_text(
             f"""
-**Kesalahan Durasi**
-
-**Durasi yang Diizinkan: {DURATION_LIMIT}**
-**Durasi yang Diteriman:** {duration}
+**Duration Error**
+**Duration Allowed: {DURATION LIMIT}**
+**Received Duration:** {duration}
 """
         )
         return
@@ -610,7 +607,7 @@ async def startyuplay(_, CallbackQuery):
             x = ytdl.extract_info(url, download=False)
     except Exception as e:
         return await CallbackQuery.message.reply_text(
-            f"Gagal mengunduh video ini..\n\n**Alasan**: {e}"
+            f"Failed to download this video..\n\n**Reason**: {e}"
         )
     title = x["title"]
     mystic = await CallbackQuery.message.reply_text(f"Downloading {title[:50]}")
@@ -711,14 +708,14 @@ async def startyuplay(_, CallbackQuery):
         m = await CallbackQuery.message.reply_photo(
             photo=thumb,
             caption=f"""
-<b>💡 Trek ditambahkan ke antrian</b>
+<b>💡 Tracks added to queue</b>
 
-<b>🏷 Nama:</b>[{title[:25]}]({url})
-<b>⏱️ Durasi:</b> {duration}
+<b>🏷 Name:</b>[{title[:999]}]({url})
+<b>⏱️ Duration:</b> {duration}
 <b>💡</b> [More Information](https://t.me/{BOT_USERNAME}?start=info_{id})
-<b>🎧 Atas permintaan:</b> {checking}
+<b>🎧 Upon request:</b> {checking}
 
-<b>#️⃣ Posisi antrian</b> {position}
+<b>#️⃣ queue position</b> {position}
 """,
             reply_markup=InlineKeyboardMarkup(buttons),
         )
@@ -742,10 +739,10 @@ async def startyuplay(_, CallbackQuery):
             photo=thumb,
             reply_markup=InlineKeyboardMarkup(buttons),
             caption=f"""
-<b>🏷 Nama:</b> [{title[:25]}]({url})
-<b>⏱️ Durasi:</b> {duration}
+<b>🏷 Name:</b> [{title[:999]}]({url})
+<b>⏱️ Duration:</b> {duration}
 <b>💡</b> [More Information](https://t.me/{BOT_USERNAME}?start=info_{id})
-<b>🎧 Atas permintaan:</b> {checking}
+<b>🎧 Upon request:</b> {checking}
 """,
         )
         os.remove(thumb)
@@ -804,7 +801,7 @@ async def popat(_,CallbackQuery):
     if i == 1:
         buttons = search_markup2(ID6, ID7, ID8, ID9, ID10, duration6, duration7, duration8, duration9, duration10 ,user_id, query)
         await CallbackQuery.edit_message_text(
-            f"**✨ Silahkan pilih lagu yang ingin anda putar**\n\n⁶ <b>{title6}</b>\n  ┗ 💡 <u>__[More Information](https://t.me/{BOT_USERNAME}?start=info_{ID6})__</u>\n  ┗ ⚡ __Powered by {BOT_NAME}__\n\n⁷ <b>{title7}</b>\n  ┗ 💡 <u>__[More Information](https://t.me/{BOT_USERNAME}?start=info_{ID7})__</u>\n  ┗ ⚡ __Powered by {BOT_NAME}__\n\n⁸ <b>{title8}</b>\n  ┗ 💡 <u>__[More Information](https://t.me/{BOT_USERNAME}?start=info_{ID8})__</u>\n  ┗ ⚡ __Powered by {BOT_NAME}__\n\n⁹ <b>{title9}</b>\n  ┗ 💡 <u>__[More Information](https://t.me/{BOT_USERNAME}?start=info_{ID9})__</u>\n  ┗ ⚡ __Powered by {BOT_NAME}__\n\n¹⁰ <b>{title10}</b>\n  ┗ 💡 <u>__[More Information](https://t.me/{BOT_USERNAME}?start=info_{ID10})__</u>\n  ┗ ⚡ __Powered by {BOT_NAME}__",    
+            f"**✨ Please select the song you want to play**\n\n⁶ <b>{title6}</b>\n  ┗ 💡 <u>__[More Information](https://t.me/{BOT_USERNAME}?start=info_{ID6})__</u>\n  ┗ ⚡ __Powered by {BOT_NAME}__\n\n⁷ <b>{title7}</b>\n  ┗ 💡 <u>__[More Information](https://t.me/{BOT_USERNAME}?start=info_{ID7})__</u>\n  ┗ ⚡ __Powered by {BOT_NAME}__\n\n⁸ <b>{title8}</b>\n  ┗ 💡 <u>__[More Information](https://t.me/{BOT_USERNAME}?start=info_{ID8})__</u>\n  ┗ ⚡ __Powered by {BOT_NAME}__\n\n⁹ <b>{title9}</b>\n  ┗ 💡 <u>__[More Information](https://t.me/{BOT_USERNAME}?start=info_{ID9})__</u>\n  ┗ ⚡ __Powered by {BOT_NAME}__\n\n¹⁰ <b>{title10}</b>\n  ┗ 💡 <u>__[More Information](https://t.me/{BOT_USERNAME}?start=info_{ID10})__</u>\n  ┗ ⚡ __Powered by {BOT_NAME}__",    
             reply_markup=InlineKeyboardMarkup(buttons),
             disable_web_page_preview=True
         )  
@@ -812,7 +809,7 @@ async def popat(_,CallbackQuery):
     if i == 2:
         buttons = search_markup(ID1, ID2, ID3, ID4, ID5, duration1, duration2, duration3, duration4, duration5, user_id, query)
         await CallbackQuery.edit_message_text(
-            f"**✨ Silahkan pilih lagu yang ingin anda putar**\n\n¹ <b>{title1}</b>\n  ┗ 💡 <u>__[More Information](https://t.me/{BOT_USERNAME}?start=info_{ID1})__</u>\n  ┗ ⚡ __Powered by {BOT_NAME}__\n\n² <b>{title2}</b>\n  ┗ 💡 <u>__[More Information](https://t.me/{BOT_USERNAME}?start=info_{ID2})__</u>\n  ┗ ⚡ __Powered by {BOT_NAME}__\n\n³ <b>{title3}</b>\n  ┗ 💡 <u>__[More Information](https://t.me/{BOT_USERNAME}?start=info_{ID3})__</u>\n  ┗ ⚡ __Powered by {BOT_NAME}__\n\n⁴ <b>{title4}</b>\n  ┗ 💡 <u>__[More Information](https://t.me/{BOT_USERNAME}?start=info_{ID4})__</u>\n  ┗ ⚡ __Powered by {BOT_NAME}__\n\n⁵ <b>{title5}</b>\n  ┗ 💡 <u>__[More Information](https://t.me/{BOT_USERNAME}?start=info_{ID5})__</u>\n  ┗ ⚡ __Powered by {BOT_NAME}__",    
+            f"**✨ Please select the song you want to play**\n\n¹ <b>{title1}</b>\n  ┗ 💡 <u>__[More Information](https://t.me/{BOT_USERNAME}?start=info_{ID1})__</u>\n  ┗ ⚡ __Powered by {BOT_NAME}__\n\n² <b>{title2}</b>\n  ┗ 💡 <u>__[More Information](https://t.me/{BOT_USERNAME}?start=info_{ID2})__</u>\n  ┗ ⚡ __Powered by {BOT_NAME}__\n\n³ <b>{title3}</b>\n  ┗ 💡 <u>__[More Information](https://t.me/{BOT_USERNAME}?start=info_{ID3})__</u>\n  ┗ ⚡ __Powered by {BOT_NAME}__\n\n⁴ <b>{title4}</b>\n  ┗ 💡 <u>__[More Information](https://t.me/{BOT_USERNAME}?start=info_{ID4})__</u>\n  ┗ ⚡ __Powered by {BOT_NAME}__\n\n⁵ <b>{title5}</b>\n  ┗ 💡 <u>__[More Information](https://t.me/{BOT_USERNAME}?start=info_{ID5})__</u>\n  ┗ ⚡ __Powered by {BOT_NAME}__",    
             reply_markup=InlineKeyboardMarkup(buttons),
             disable_web_page_preview=True 
         )  
