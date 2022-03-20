@@ -83,11 +83,11 @@ async def welcome(_, message: Message):
         try:
             if member.id in OWNER:
                 return await message.reply_text(
-                    f"💡 Pemilik Bot [{member.mention}] baru saja bergabung di grup ini."
+                    f"💡 Owner bot [{member.mention}] just joined this group."
                 )
             if member.id in SUDOERS:
                 return await message.reply_text(
-                    f"💡 Admin Bot [{member.mention}] baru saja bergabung di grup ini."
+                    f"💡 Admin Bot [{member.mention}] just joined this group."
                 )
             if member.id == ASSID:
                 await remove_active_chat(chat_id)
@@ -95,9 +95,9 @@ async def welcome(_, message: Message):
                 out = start_pannel()
                 await message.reply_text(
                     f"""
-👋 ** Halo senang rasanya bisa bergabung di grup ini**
+👋 ** Hello, it's nice to be able to join this group**
 
-💡 **Jangan lupa untuk menjadikan saya sebagai admin di grup ini**
+💡 **Don't forget to make me an admin in this group**
 """,
                     reply_markup=InlineKeyboardMarkup(out[1]),
                     disable_web_page_preview=True
@@ -110,7 +110,7 @@ async def welcome(_, message: Message):
 @Client.on_message(
     filters.group
     & filters.command(
-        ["start", "help", f"start@{BOT_USERNAME}", f"help@{BOT_USERNAME}"]
+        ["music_start", "mhelp", f"music_start@{BOT_USERNAME}", f"help@{BOT_USERNAME}"]
     )
 )
 async def start(_, message: Message):
@@ -118,10 +118,10 @@ async def start(_, message: Message):
     out = start_pannel()
     await message.reply_text(
         f"""
-Terima kasih telah memasukkan saya di {message.chat.title}.
-Musik itu hidup.
+Thank you for including me in {message.chat.title}.
+Music is life.
 
-Untuk bantuan silahkan klik tombol dibawah.
+For assistance please click the button below.
 """,
         reply_markup=InlineKeyboardMarkup(out[1]),
         disable_web_page_preview=True
@@ -131,25 +131,7 @@ Untuk bantuan silahkan klik tombol dibawah.
 
 @Client.on_message(filters.private & filters.incoming & filters.command("start"))
 async def play(_, message: Message):
-    if len(message.command) == 1:
-        user_id = message.from_user.id
-        user_name = message.from_user.first_name
-        rpk = "[" + user_name + "](tg://user?id=" + str(user_id) + ")"
-        await app.send_message(
-            message.chat.id,
-            text=f"""
-**✨ Selamat Datang {rpk}!
-
-💬 [{BOT_NAME}](tg://user?id=2129034376) memungkinkan anda untuk memutar musik pada grup melalui obrolan suara yang baru di Telegram!
-
-💡 Untuk Mengetahui Semua Perintah Bot Dan Bagaimana Cara Kerja Nya Dengan Menekan Tombol » 📚 ᴄᴏᴍᴍᴀɴᴅ​!**
-
-""",
-            parse_mode="markdown",
-            reply_markup=pstart_markup,
-            reply_to_message_id=message.message_id,
-        )
-    elif len(message.command) == 2:
+    if len(message.command) == 2:
         query = message.text.split(None, 1)[1]
         f1 = query[0]
         f2 = query[1]
@@ -188,7 +170,7 @@ async def play(_, message: Message):
             )
         if str(finxx) == "sud":
             sudoers = await get_sudoers()
-            text = "**📝 DAFTAR PENGGUNA SUDO**\n\n"
+            text = "**📝 SUDO USER LIST**\n\n"
             for count, user_id in enumerate(sudoers, 1):
                 try:
                     user = await app.get_users(user_id)
@@ -197,12 +179,12 @@ async def play(_, message: Message):
                     continue
                 text += f"- {user}\n"
             if not text:
-                await message.reply_text("Tidak Ada Pengguna Sudo")
+                await message.reply_text("No Sudo User")
             else:
                 await message.reply_text(text)
 
 
-@app.on_message(filters.command("settings") & filters.group)
+@app.on_message(filters.command("msettings") & filters.group)
 async def settings(_, message: Message):
     c_id = message.chat.id
     _check = await get_assistant(c_id, "assistant")
