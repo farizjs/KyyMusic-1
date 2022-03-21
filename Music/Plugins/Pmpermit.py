@@ -23,8 +23,8 @@ from pyrogram.types import Message
 from Music import userbot as USER
 
 PROJECT_NAME = "Joker Robot"
-PMPERMIT = ENABLE
-PMSET =True
+PMPERMIT = "ENABLE"
+PMSET = True
 pchats = []
 OWNER = "@farizjs"
 
