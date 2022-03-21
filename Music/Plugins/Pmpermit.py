@@ -18,11 +18,11 @@ from pyrogram import Client
 import asyncio
 from Music import SUDOERS as SUDO_USERS
 from Music.config import GROUP as SUPPORT_GROUP
-from Music.config import BOT_NAME as PROJECT_NAME
 from pyrogram import filters
 from pyrogram.types import Message
 from Music import userbot as USER
 
+PROJECT_NAME = "Joker Robot"
 PMPERMIT = ENABLE
 PMSET =True
 pchats = []
